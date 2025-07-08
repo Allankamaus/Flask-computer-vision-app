@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Home Page</title>
+    <header> Home page</header>
+</head>
+<body>
+
+<h1 id ="test">Loading...</h1>
+
+<script>
+fetch('http://127.0.0.1:5000/api/test')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        document.getElementById("test").innerHTML = data.text;
+    })
+    .catch(error => {
+        console.log("Error:", error);
+    })
+</script>
+
+    
+</body>
+</html>

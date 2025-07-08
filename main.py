@@ -1,24 +1,29 @@
-import flask
+from flask import Flask, jsonify
 import aiohttp
 import cv2
 
+app = Flask(__name__)
 
-#camera connection
 cap = cv2.VideoCapture(0)
 
-while True:
-    #Capture frame-by-frame
-    ret, frame = cap.read()
-    if not ret:
-        print("failed to grab frame")
-        break
 
-    cv2.imshow("Camera Feed", frame)
+@app.route('/api/test')
+def test():
+    return jsonify({"text":"hello! test successful"})
+
+@app.route('/save_image')
+#camera connection
+def capture_video():
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print("failed to grab frame")
+            break
+        cv2.imshow("Camera Feed", frame)
 
     #press 'q' to quit
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-
-cap.release()
-cv2.destroyAllWindows()
+    cap.release()
+    cv2.destroyAllWindows()

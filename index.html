@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <title>Home Page</title>
     <header> Home page</header>
+    <link rel="stylesheet" href = "style.css">
 </head>
 <body>
 
 <h1 id ="test">Loading...</h1>
 <button id="captureBtn">Capture Image</button>
+<button id ="capture_greyscale">Capture in Greyscale</button>
 <button id="stopBtn">Stop Capturing</button>
 <br>
 <img id="videoStream" src="http://127.0.0.1:5000/video_feed" alt="Camera Stream" style="max-width: 100%; height: auto;" />
@@ -50,10 +52,25 @@ function stopCapturing() {
         });
 }
 
+//function to capture greyscale image
+function captureGreyScale(){
+    fetch('http://127.0.0.1:5000/capture_greyscale')
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            alert("Greyscale capture successful!")
+        })
+        .catch(error => {
+            alert("Oops! Error: " + error);
+        })
+}
+
 document.getElementById("captureBtn").onclick = captureImage;
 document.getElementById("stopBtn").onclick = stopCapturing;
+document.getElementById("capture_greyscale").onclick = captureGreyScale;
 </script>
 <img src = "capture/captured_image.jpg"> 
+<img src = "capture/captured_greyscale.jpg"> 
 
     
 </body>

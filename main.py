@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, Response
 from flask_cors import CORS
 import aiohttp
-import cv2
+import cv2, time
 import os
 from threading import Event
 
@@ -62,6 +62,25 @@ def video_feed():
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/capture_greyscale')
+def capture_greyscale():
+    ret, frame = cap.read()
+    if not ret:
+        return jsonify({"message": "Failed to grab frame"}), 500
+    grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    capture_dir = os.path.join(os.path.dirname(__file__), 'capture')
+    if not os.path.exists(capture_dir):
+        os.makedirs(capture_dir)
+    image_path = os.path.join(capture_dir, 'captured_greyscale.jpg')
+    cv2.imwrite(image_path, grey_frame)
+    return jsonify({"message": "Greyscale image saved successfully in capture folder!"})
+
+@app.route('/Blur')
+def Blur():
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    
+
 
 if __name__ == "__main__":
     app.run(debug=True)

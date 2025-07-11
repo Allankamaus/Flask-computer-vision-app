@@ -8,8 +8,13 @@
 <body>
 
 <h1 id ="test">Loading...</h1>
+<button id="captureBtn">Capture Image</button>
+<button id="stopBtn">Stop Capturing</button>
+<br>
+<img id="videoStream" src="http://127.0.0.1:5000/video_feed" alt="Camera Stream" style="max-width: 100%; height: auto;" />
 
 <script>
+    //Testing fetch api to get data from flask server
 fetch('http://127.0.0.1:5000/api/test')
     .then(response => response.json())
     .then(data => {
@@ -19,7 +24,36 @@ fetch('http://127.0.0.1:5000/api/test')
     .catch(error => {
         console.log("Error:", error);
     })
+
+    //fetch image caputre from flask server
+// Function to call /save_image when button is pressed
+function captureImage() {
+    fetch('http://127.0.0.1:5000/save_image')
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            alert("Capture successful!")
+        })
+        .catch(error => {
+            alert("Error: " + error);
+        });
+}
+
+function stopCapturing() {
+    fetch('http://127.0.0.1:5000/stop_capture')
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        })
+        .catch(error => {
+            alert("Error: " + error);
+        });
+}
+
+document.getElementById("captureBtn").onclick = captureImage;
+document.getElementById("stopBtn").onclick = stopCapturing;
 </script>
+<img src = "capture/captured_image.jpg"> 
 
     
 </body>

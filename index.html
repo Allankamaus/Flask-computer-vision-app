@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <title>Home Page</title>
-    <header> Home page</header>
+    <header> Home page
+        <h1> Welcome to my Human detection website</h1>
+        <p> please select one of the settings</p>
+    </header>
     <link rel="stylesheet" href = "style.css">
 </head>
 <body>
+    
 
-<h1 id ="test">Loading...</h1>
+<p id ="test">Back-end connection Loading...</p>
 <button id="captureBtn">Capture Image</button>
 <button id ="capture_greyscale">Capture in Greyscale</button>
 <button id="stopBtn">Stop Capturing</button>
@@ -69,18 +73,30 @@ function captureGreyScale(){
         })
 }
 
-function cannyEdgeDetection(){
+function showStream(streamId) {
+    // Hide all streams
     document.getElementById("videoStream").style.display = "none";
+    document.getElementById("cannyStream").style.display = "none";
+    document.getElementById("blurfaceStream").style.display = "none";
+    // Show the selected stream
+    document.getElementById(streamId).style.display = "block";
+}
+
+function showNormalStream() {
+    showStream("videoStream");
+}
+
+function cannyEdgeDetection(){
     document.getElementById("cannyStream").src = "http://127.0.0.1:5000/canny_video_feed";
-    document.getElementById("cannyStream").style.display = "block";
+    showStream("cannyStream");
 }
 
 function blurFace(){
-    document.getElementById("videoStream").style.display = "none";
     document.getElementById("blurfaceStream").src = "http://127.0.0.1:5000/Blur";
-    document.getElementById("blurfaceStream").style.display = "block";
-
+    showStream("blurfaceStream");
 }
+
+document.getElementById("videoStream").onclick = showNormalStream;
 
 document.getElementById("captureBtn").onclick = captureImage;
 document.getElementById("stopBtn").onclick = stopCapturing;

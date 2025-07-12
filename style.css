@@ -1,4 +1,23 @@
 body{
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: darkgrey;
+    font-family:  'Comic Sans MS', 'Comic Sans', cursive, Arial, Helvetica, sans-serif;
+    background-color: rgb(35, 35, 35);
+    color: white;
 }
+
+button {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+}
+
+button:hover {
+    background-color: grey;
+}
+
+
+title {
+    font-size: large;
+}
+

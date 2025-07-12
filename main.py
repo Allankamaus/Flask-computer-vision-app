@@ -96,9 +96,30 @@ def capture_greyscale():
     cv2.imwrite(image_path, grey_frame)
     return jsonify({"message": "Greyscale image saved successfully in capture folder!"})
 
+
+#blurring faces in the image
 @app.route('/Blur')
-def Blur():
+def blur_face():
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    def generate():
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+            for (x, y, w, h) in faces:
+                face_roi = frame[y:y+h, x:x+w]
+                face_roi = cv2.GaussianBlur(face_roi, (99, 99), 30)
+                frame[y:y+h, x:x+w] = face_roi
+            _, buffer = cv2.imencode('.jpg', frame)
+            frame_bytes = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+    return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+    
+
     
 
 

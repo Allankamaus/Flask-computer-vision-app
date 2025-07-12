@@ -1,7 +1,7 @@
-from flask import Flask, jsonify, Response
+from flask import Flask, jsonify, Response, request
 from flask_cors import CORS
 import aiohttp
-import cv2, time
+import cv2, time,requests
 import os
 from threading import Event
 
@@ -10,6 +10,26 @@ CORS(app)
 
 cap = cv2.VideoCapture(0)
 stop_event = Event()
+
+
+def canny_video(low, high):
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        edges = cv2.Canny(grey, low, high)
+        edges_bgr = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+        ret, buffer = cv2.imencode('.jpg', edges_bgr)
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        
+@app.route('/canny_video_feed')
+def canny_video_feed():
+    low = int(request.args.get('Low', 100))
+    high = int(request.args.get('High', 200))
+    return Response(canny_video(low, high), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/api/test')

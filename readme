@@ -1,1 +1,9 @@
-holy guacadeez nuts
+This is a flask power computer vision project aimed at exporing the capabilities of open.cv
+
+so far you can see a normal video, a canny edge video and a blured face video
+
+other goals include:
+-face detection
+-object detection
+-image downscling
+-fps counter

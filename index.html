@@ -18,10 +18,12 @@
 <button id="stopBtn">Stop Capturing</button>
 <button id="cannybtn">Canny edge detection</button>
 <button id="Face_Blur">Blur Face</button>
+<button id="Face_detection">Face detection</button>
 <br>
 <img id="videoStream" src="http://127.0.0.1:5000/video_feed" alt="Camera Stream" style="max-width: 100%; height: auto;" />
 <img id="cannyStream" src="" alt="Canny Edge Stream" style="max-width: 100%; height: auto; display:none;" />
 <img id="blurfaceStream" src="" alt="Face Blur Stream" style="max-width: 100%; height: auto; display:none;" />
+<img id="FaceDetection" src="" alt="Face detection" style="max-width: 100%; height: auto; display:none;" />
 
 <script>
     //Testing fetch api to get data from flask server
@@ -96,8 +98,13 @@ function blurFace(){
     showStream("blurfaceStream");
 }
 
-document.getElementById("videoStream").onclick = showNormalStream;
+function Face_detection(){
+    document.getElementById("FaceDetection").src = "http://127.0.0.1:5000/face_detection";
+    showStream("FaceDetection");
+}
 
+document.getElementById("videoStream").onclick = showNormalStream;
+document.getElementById("Face_detection").onclick = Face_detection;
 document.getElementById("captureBtn").onclick = captureImage;
 document.getElementById("stopBtn").onclick = stopCapturing;
 document.getElementById("capture_greyscale").onclick = captureGreyScale;

@@ -148,7 +148,7 @@ def face_detection():
             fps = (1/(curr_time - prev_time)) if curr_time != prev_time else 0
             prev_time = curr_time
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+            faces = face_cascade.detectMultiScale(gray, 1.3, 10)
             for (x, y, w, h) in faces:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
             _, buffer = cv2.imencode('.jpg', frame)
@@ -158,7 +158,27 @@ def face_detection():
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
         
-
+@app.route('/colored_border')
+def colored_border():
+    low = int(request.args.get('Low', 100))
+    high = int(request.args.get('High', 200))
+    def generate():
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            edges = cv2.Canny(grey,high,low)
+            color_frame = frame.copy()
+            color_mask = edges.astype(bool)
+            color_frame[color_mask] = [0, 255, 0]    
+    # Overlay green edges on the color frame
+            color_frame[color_mask] = [0, 255, 0]  # Green
+            _, buffer = cv2.imencode('.jpg', color_frame)
+            frame_bytes = buffer.tobytes()
+            yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+    return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
     

@@ -19,11 +19,13 @@
 <button id="cannybtn">Canny edge detection</button>
 <button id="Face_Blur">Blur Face</button>
 <button id="Face_detection">Face detection</button>
+<button id="coloredEdgesBtn">Colored Edges</button>
 <br>
 <img id="videoStream" src="http://127.0.0.1:5000/video_feed" alt="Camera Stream" style="max-width: 100%; height: auto;" />
 <img id="cannyStream" src="" alt="Canny Edge Stream" style="max-width: 100%; height: auto; display:none;" />
 <img id="blurfaceStream" src="" alt="Face Blur Stream" style="max-width: 100%; height: auto; display:none;" />
 <img id="FaceDetection" src="" alt="Face detection" style="max-width: 100%; height: auto; display:none;" />
+<img id="coloredEdgesStream" src="" alt="Colored Edges Stream" style="max-width: 100%; height: auto; display:none;" />
 
 <script>
     //Testing fetch api to get data from flask server
@@ -80,6 +82,7 @@ function showStream(streamId) {
     document.getElementById("videoStream").style.display = "none";
     document.getElementById("cannyStream").style.display = "none";
     document.getElementById("blurfaceStream").style.display = "none";
+    document.getElementById("coloredEdgesStream").style.display = "none";
     // Show the selected stream
     document.getElementById(streamId).style.display = "block";
 }
@@ -103,6 +106,11 @@ function Face_detection(){
     showStream("FaceDetection");
 }
 
+function coloredEdges(){
+    document.getElementById("coloredEdgesStream").src = "http://127.0.0.1:5000/colored_border";
+    showStream("coloredEdgesStream");
+}
+
 document.getElementById("videoStream").onclick = showNormalStream;
 document.getElementById("Face_detection").onclick = Face_detection;
 document.getElementById("captureBtn").onclick = captureImage;
@@ -110,6 +118,7 @@ document.getElementById("stopBtn").onclick = stopCapturing;
 document.getElementById("capture_greyscale").onclick = captureGreyScale;
 document.getElementById("cannybtn").onclick = cannyEdgeDetection;
 document.getElementById("Face_Blur").onclick = blurFace
+document.getElementById("coloredEdgesBtn").onclick = coloredEdges;
 </script>
 <img src = "capture/captured_image.jpg"> 
 <img src = "capture/captured_greyscale.jpg"> 

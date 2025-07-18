@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, Response, request
+from flask import Flask, jsonify, Response, request, send_file
 from flask_cors import CORS
 import aiohttp
 import cv2, time,requests,math
@@ -180,8 +180,30 @@ def colored_border():
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+def downsample_image():
+    img_path = os.path.join(os.path.dirname(__file__), 'capture', 'captured_image.jpg')
+    img = cv2.imread(img_path)
+    if img is None:
+        print("Image not found or path is incorrect!")
+        return None
+    small = cv2.pyrDown(img)
+    downsample_path = os.path.join(os.path.dirname(__file__), 'capture', 'downsample.jpg')
+    cv2.imwrite(downsample_path, small)
+    print("Downsampled image saved as", downsample_path)
+    return downsample_path
 
-    
+@app.route('/downsample', methods=['POST'])
+def downsample_route():
+    path = downsample_image()
+    if path:
+        return jsonify({'message': 'Downsampled image saved!', 'path': '/capture/downsample.jpg'})
+    else:
+        return jsonify({'message': 'Source image not found!'}), 404
+
+@app.route('/show_downsample')
+def show_downsample():
+    downsample_path = os.path.join(os.path.dirname(__file__), 'capture', 'downsample.jpg')
+    return send_file(downsample_path, mimetype='image/jpeg')
 
 
 if __name__ == "__main__":

@@ -20,12 +20,14 @@
 <button id="Face_Blur">Blur Face</button>
 <button id="Face_detection">Face detection</button>
 <button id="coloredEdgesBtn">Colored Edges</button>
+<button id="downsampleBtn">Downsample Image</button>
 <br>
 <img id="videoStream" src="http://127.0.0.1:5000/video_feed" alt="Camera Stream" style="max-width: 100%; height: auto;" />
 <img id="cannyStream" src="" alt="Canny Edge Stream" style="max-width: 100%; height: auto; display:none;" />
 <img id="blurfaceStream" src="" alt="Face Blur Stream" style="max-width: 100%; height: auto; display:none;" />
 <img id="FaceDetection" src="" alt="Face detection" style="max-width: 100%; height: auto; display:none;" />
 <img id="coloredEdgesStream" src="" alt="Colored Edges Stream" style="max-width: 100%; height: auto; display:none;" />
+<div id="downsampleResult"></div>
 
 <script>
     //Testing fetch api to get data from flask server
@@ -111,6 +113,21 @@ function coloredEdges(){
     showStream("coloredEdgesStream");
 }
 
+function downsampleImage(){
+    fetch('http://127.0.0.1:5000/downsample', {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            if(data.path){
+                document.getElementById("downsampleResult").innerHTML = `<img src="http://127.0.0.1:5000/show_downsample" alt="Downsampled Image" style="max-width: 100%; height: auto;" />`;
+            } else {
+                document.getElementById("downsampleResult").innerText = data.message;
+            }
+        })
+        .catch(error => {
+            document.getElementById("downsampleResult").innerText = "Error: " + error;
+        });
+}
+
 document.getElementById("videoStream").onclick = showNormalStream;
 document.getElementById("Face_detection").onclick = Face_detection;
 document.getElementById("captureBtn").onclick = captureImage;
@@ -119,9 +136,10 @@ document.getElementById("capture_greyscale").onclick = captureGreyScale;
 document.getElementById("cannybtn").onclick = cannyEdgeDetection;
 document.getElementById("Face_Blur").onclick = blurFace
 document.getElementById("coloredEdgesBtn").onclick = coloredEdges;
+document.getElementById("downsampleBtn").onclick = downsampleImage;
 </script>
-<img src = "capture/captured_image.jpg"> 
-<img src = "capture/captured_greyscale.jpg"> 
+<img src = "capture/captured_image.jpg" id="normalImage" style="max-width: 100%; height: auto;" />
+<div id="downsampleResult"><img src="capture/downsample.jpg" id="downsampleImage" style="max-width: 100%; height: auto;" /></div>
 
     
 </body>

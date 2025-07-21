@@ -40,7 +40,7 @@ def canny_video_feed():
 #text connection of flask route
 @app.route('/api/test')
 def test():
-    return jsonify({"text":"hello! test successful"})
+    return jsonify({"text":"success"})
 
 @app.route('/save_image')
 #camera connection
@@ -204,6 +204,80 @@ def downsample_route():
 def show_downsample():
     downsample_path = os.path.join(os.path.dirname(__file__), 'capture', 'downsample.jpg')
     return send_file(downsample_path, mimetype='image/jpeg')
+
+@app.route('/save_canny_image')
+def save_canny_image():
+    low = 100
+    high = 200
+    ret, frame = cap.read()
+    if not ret:
+        return jsonify({"message": "Failed to grab frame"}), 500
+    grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(grey, low, high)
+    color_frame = frame.copy()
+    mask = edges.astype(bool)
+    color_frame[mask] = [255, 255, 255]  # White edges
+    capture_dir = os.path.join(os.path.dirname(__file__), 'capture')
+    if not os.path.exists(capture_dir):
+        os.makedirs(capture_dir)
+    image_path = os.path.join(capture_dir, 'captured_image.jpg')
+    cv2.imwrite(image_path, color_frame)
+    return jsonify({"message": "Canny image saved successfully!"})
+
+@app.route('/save_blur_image')
+def save_blur_image():
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    ret, frame = cap.read()
+    if not ret:
+        return jsonify({"message": "Failed to grab frame"}), 500
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    for (x, y, w, h) in faces:
+        face_roi = frame[y:y+h, x:x+w]
+        face_roi = cv2.GaussianBlur(face_roi, (99, 99), 30)
+        frame[y:y+h, x:x+w] = face_roi
+    capture_dir = os.path.join(os.path.dirname(__file__), 'capture')
+    if not os.path.exists(capture_dir):
+        os.makedirs(capture_dir)
+    image_path = os.path.join(capture_dir, 'captured_image.jpg')
+    cv2.imwrite(image_path, frame)
+    return jsonify({"message": "Blurred face image saved successfully!"})
+
+@app.route('/save_face_detection_image')
+def save_face_detection_image():
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    ret, frame = cap.read()
+    if not ret:
+        return jsonify({"message": "Failed to grab frame"}), 500
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
+    capture_dir = os.path.join(os.path.dirname(__file__), 'capture')
+    if not os.path.exists(capture_dir):
+        os.makedirs(capture_dir)
+    image_path = os.path.join(capture_dir, 'captured_image.jpg')
+    cv2.imwrite(image_path, frame)
+    return jsonify({"message": "Face detection image saved successfully!"})
+
+@app.route('/save_colored_edges_image')
+def save_colored_edges_image():
+    low = 100
+    high = 200
+    ret, frame = cap.read()
+    if not ret:
+        return jsonify({"message": "Failed to grab frame"}), 500
+    grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(grey, low, high)
+    color_frame = frame.copy()
+    mask = edges.astype(bool)
+    color_frame[mask] = [0, 255, 0]  # Green edges
+    capture_dir = os.path.join(os.path.dirname(__file__), 'capture')
+    if not os.path.exists(capture_dir):
+        os.makedirs(capture_dir)
+    image_path = os.path.join(capture_dir, 'captured_image.jpg')
+    cv2.imwrite(image_path, color_frame)
+    return jsonify({"message": "Colored edges image saved successfully!"})
 
 
 if __name__ == "__main__":

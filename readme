@@ -1,9 +1,27 @@
-This is a flask power computer vision project aimed at exporing the capabilities of open.cv
+# OpenCV Computer Vision Flask App
 
-so far you can see a normal video, a canny edge video and a blured face video
+A simple Flask web application for real-time computer vision tasks using OpenCV. Features include:
 
-other goals include:
--face detection
--object detection
--image downscling
--fps counter
+- Live video streaming from your webcam
+- Canny edge detection
+- Face detection and face blurring
+- Capture and save images from any video feed
+- Downsample captured images
+- Modern, user-friendly web interface
+
+## Requirements
+- Python 3.8+
+- Flask
+- OpenCV (`opencv-python`)
+- flask-cors
+
+## Usage
+1. Start the Flask server: `python main.py`
+2. Open `index.html` in your browser
+3. Click "Start Live Video" to begin
+4. Use the buttons to apply filters, capture images, and more
+
+## Notes
+- Make sure your webcam is connected
+- Place `haarcascade_frontalface_default.xml` in the project directory for face detection
+- Captured images are saved in the `capture` folder
